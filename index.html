@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0B2A20">
+<title>سبّح</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
+<style>
+/* تخطيط: عمود واحد بعرض الجوال — الذكر، ثم الحلقة، ثم زر المايك، ثم الإعدادات */
+:root{
+  --bg:#0B2A20; --card:#123A2D; --line:#24503F; --gold:#D9B45A; --text:#F3EEDD; --muted:#9DB5AA; --ok:#7FD1A1;
+  --display:"Amiri","Noto Naskh Arabic","Traditional Arabic",serif;
+  --ui:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);-webkit-tap-highlight-color:transparent}
+body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:460px;margin:0 auto;padding-block:16px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+header{display:flex;align-items:baseline;justify-content:space-between}
+h1{margin:0;font-family:var(--display);color:var(--gold);font-size:34px;line-height:1}
+.today{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:8px 14px;font:inherit;font-size:15px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:600}
+.dhikr{font-family:var(--display);font-size:36px;text-align:center;margin:6px 0 0;text-wrap:balance}
+.ringBox{position:relative;width:min(270px,78vw);aspect-ratio:1;margin:0 auto;cursor:pointer;user-select:none;border:0;background:none;padding:0;color:inherit;font:inherit}
+.ringBox svg{width:100%;height:100%;display:block;transform:rotate(-90deg)}
+.ringBox .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.num b{font-size:76px;line-height:1;font-variant-numeric:tabular-nums;transition:transform .15s}
+.num span{color:var(--muted);font-size:17px}
+.ringBox.bump b{transform:scale(1.12)}
+#prog{transition:stroke-dashoffset .25s ease}
+.level{width:180px;height:6px;margin:0 auto;background:var(--card);border-radius:3px;overflow:hidden}
+.level i{display:block;height:100%;width:0;background:var(--gold);transition:width .08s}
+.status{text-align:center;color:var(--muted);min-height:2.8em;font-size:15px;margin:0}
+.status.done{color:var(--ok)}
+.mic{height:58px;border:0;border-radius:29px;background:var(--gold);color:var(--bg);font:inherit;font-size:19px;font-weight:600;cursor:pointer}
+.mic.on{background:var(--card);color:var(--gold);border:2px solid var(--gold)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{height:46px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;font:inherit;font-size:15px;cursor:pointer}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.panel h2{margin:0;font-size:15px;color:var(--gold)}
+.panel label{display:flex;gap:10px;align-items:flex-start;line-height:1.5;cursor:pointer}
+.panel small{display:block;color:var(--muted);font-size:13px}
+input[type=radio],input[type=checkbox]{accent-color:var(--gold);width:18px;height:18px;margin-top:3px;flex:none}
+input[type=range]{width:100%;accent-color:var(--gold)}
+.note{color:var(--muted);font-size:12.5px;text-align:center;margin:0;line-height:1.6}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <h1>سبّح</h1>
+    <span class="today" id="today">اليوم: ٠</span>
+  </header>
+
+  <nav class="chips" id="chips" aria-label="اختر الذكر"></nav>
+
+  <p class="dhikr" id="dhikr">سبحان الله</p>
+
+  <button class="ringBox" id="ring" aria-label="اضغط للعدّ يدوياً">
+    <svg viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="88" fill="none" stroke="var(--card)" stroke-width="13"/>
+      <circle id="prog" cx="100" cy="100" r="88" fill="none" stroke="var(--gold)" stroke-width="13" stroke-linecap="round" stroke-dasharray="552.92" stroke-dashoffset="552.92"/>
+    </svg>
+    <span class="num"><b id="count">0</b><span id="target">من 33</span></span>
+  </button>
+
+  <div class="level" aria-hidden="true"><i id="level"></i></div>
+  <p class="status" id="status" aria-live="polite">اضغط «ابدأ» وقل الذكر بصوتك</p>
+
+  <button class="mic" id="mic">🎙 ابدأ العدّ بالصوت</button>
+  <div class="row">
+    <button class="btn" id="reset">تصفير</button>
+    <button class="btn" id="next">الذكر التالي</button>
+  </div>
+
+  <section class="panel">
+    <h2>طريقة العدّ</h2>
+    <label><input type="radio" name="mode" id="modeBurst" value="burst" checked>
+      <span>نبضات الصوت<small>كل ذكر بين سكتتين = عدّة. سريع ويشتغل بدون إنترنت.</small></span></label>
+    <label><input type="radio" name="mode" id="modeSpeech" value="speech">
+      <span>التعرّف على الكلام<small>يتأكد إن الكلمة هي الذكر نفسه. أبطأ شوي، ويحتاج كروم.</small></span></label>
+    <div id="sensBox">
+      <label for="sens" style="display:block;color:var(--muted)">الحساسية</label>
+      <input type="range" id="sens" min="0" max="100" value="60">
+    </div>
+    <label><input type="checkbox" id="seq" checked>
+      <span>أذكار بعد الصلاة بالتسلسل<small>سبحان الله ٣٣ ← الحمد لله ٣٣ ← الله أكبر ٣٤</small></span></label>
+  </section>
+
+  <p class="note">تقدر تضغط على الدائرة للعدّ باليد. الصوت يُعالج داخل جوالك في وضع «نبضات الصوت» وما يُرسل لأي مكان.</p>
+</main>
+
+<script>
+(() => {
+  const LIST = [
+    {t:"سبحان الله", n:33, k:["سبحان"]},
+    {t:"الحمد لله", n:33, k:["حمد"]},
+    {t:"الله أكبر", n:34, k:["اكبر"]},
+    {t:"أستغفر الله", n:100, k:["استغفر"]},
+    {t:"لا إله إلا الله", n:100, k:["لااله","لاله"]},
+    {t:"سبحان الله وبحمده", n:100, k:["بحمده"]},
+    {t:"لا حول ولا قوة إلا بالله", n:100, k:["حول"]},
+    {t:"اللهم صلِّ على محمد", n:100, k:["محمد"]},
+  ];
+  const AFTER = [0,1,2];
+  const CIRC = 552.92;
+  const $ = id => document.getElementById(id);
+  const ar = n => n.toLocaleString("ar-SA");
+
+  // ── الحالة ──
+  const store = {
+    get(k,d){ try{ const v = localStorage.getItem("sabbih_"+k); return v===null?d:JSON.parse(v);}catch(e){return d} },
+    set(k,v){ try{ localStorage.setItem("sabbih_"+k, JSON.stringify(v)); }catch(e){} }
+  };
+  const dayKey = () => new Date().toISOString().slice(0,10);
+  let idx = Math.min(store.get("idx",0), LIST.length-1);
+  let count = store.get("count",0);
+  let today = store.get("day","")===dayKey() ? store.get("today",0) : 0;
+  let done = count >= LIST[idx].n;
+  let listening = false;
+  const cur = () => LIST[idx];
+  const useSpeech = () => $("modeSpeech").checked;
+
+  function save(){ store.set("idx",idx); store.set("count",count); store.set("day",dayKey()); store.set("today",today); }
+
+  // ── أدوات النص العربي ──
+  function norm(s){
+    let o="";
+    for(const c of s){
+      const u=c.charCodeAt(0);
+      if((u>=0x064B&&u<=0x065F)||u===0x0670||u===0x0640||/\s/.test(c)) continue;
+      if("أإآٱ".includes(c)) o+="ا";
+      else if(c==="ى"||c==="ئ") o+="ي";
+      else if(c==="ة") o+="ه";
+      else if(c==="ؤ") o+="و";
+      else o+=c;
+    }
+    return o;
+  }
+  function matches(s, keys){
+    let i=0,n=0;
+    while(i<s.length){
+      let best=-1,len=0;
+      for(const k of keys){ const j=s.indexOf(k,i); if(j>=0&&(best<0||j<best)){best=j;len=k.length;} }
+      if(best<0) break; n++; i=best+len;
+    }
+    return n;
+  }
+
+  // ── الواجهة ──
+  function render(){
+    $("dhikr").textContent = cur().t;
+    $("count").textContent = ar(count);
+    $("target").textContent = "من " + ar(cur().n);
+    $("prog").style.strokeDashoffset = CIRC * (1 - Math.min(count/cur().n,1));
+    $("today").textContent = "اليوم: " + ar(today);
+    $("mic").textContent = listening ? "■ إيقاف" : "🎙 ابدأ العدّ بالصوت";
+    $("mic").classList.toggle("on", listening);
+    $("sensBox").hidden = useSpeech();
+  }
+  function chips(){
+    const box=$("chips"); box.textContent="";
+    LIST.forEach((d,i)=>{
+      const b=document.createElement("button");
+      b.className="chip"; b.textContent=d.t; b.setAttribute("aria-pressed", i===idx);
+      b.onclick=()=>{ if(i!==idx) select(i); };
+      box.appendChild(b);
+      if(i===idx) setTimeout(()=>b.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"}),0);
+    });
+  }
+  function setStatus(t, ok){ const s=$("status"); s.textContent=t; s.classList.toggle("done",!!ok); }
+  function buzz(ms){ try{ navigator.vibrate && navigator.vibrate(ms); }catch(e){} }
+  function bump(){ const r=$("ring"); r.classList.remove("bump"); void r.offsetWidth; r.classList.add("bump"); setTimeout(()=>r.classList.remove("bump"),150); }
+
+  // ── العدّ ──
+  function add(n){
+    if(done) return;
+    for(let i=0;i<n;i++){
+      count++; today++;
+      if(count>=cur().n){ finish(); break; }
+    }
+    if(!done) buzz(25);
+    bump(); render(); save();
+  }
+  function finish(){
+    done=true; buzz([300,100,300]);
+    const p = AFTER.indexOf(idx);
+    if($("seq").checked && p>=0 && p<AFTER.length-1){
+      const nx = AFTER[p+1];
+      setStatus(`أكملت «${cur().t}» ✓ — التالي: ${LIST[nx].t}`, true);
+      setTimeout(()=>select(nx,true), 1200);
+    } else {
+      setStatus(`تقبّل الله ✓ أكملت ${ar(cur().n)} من «${cur().t}»`, true);
+      if(listening) stop(true);
+    }
+  }
+  function select(i, keep){
+    idx=i; count=0; done=false;
+    speech.rekey();
+    if(!keep && listening) stop();
+    if(listening) setStatus(`أسمعك… قل «${cur().t}»`);
+    chips(); render(); save();
+  }
+
+  // ── وضع نبضات الصوت ──
+  const burst = {
+    ctx:null, stream:null, timer:null, sens:Number(store.get("sens",60)),
+    async start(){
+      this.stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:true,autoGainControl:false}});
+      this.ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const src = this.ctx.createMediaStreamSource(this.stream);
+      const an = this.ctx.createAnalyser(); an.fftSize = 1024; src.connect(an);
+      const buf = new Float32Array(an.fftSize);
+      let floor=null, warm=0, inSp=false, spF=0, loudF=0, sil=0, tick=0;
+      const GAP=11, MIN=13, lens=[];
+      this.timer = setInterval(()=>{
+        an.getFloatTimeDomainData(buf);
+        let s=0; for(let i=0;i<buf.length;i++) s+=buf[i]*buf[i];
+        const db = 20*Math.log10(Math.sqrt(s/buf.length)+1e-6);
+        if(floor===null) floor=db;
+        if(warm<25){ floor=floor*0.8+db*0.2; warm++; return; }
+        const thr = floor + (22 - this.sens*0.16);
+        const loud = db > thr;
+        if(!inSp){
+          floor = db<floor ? floor*0.9+db*0.1 : floor*0.995+db*0.005;
+          if(loud){ if(++loudF>=3){ inSp=true; spF=loudF; sil=0; } } else loudF=0;
+        } else {
+          spF++; sil = loud ? 0 : sil+1;
+          if(sil>=GAP){
+            const len = spF - sil;
+            if(len>=MIN){
+              let times=1;
+              if(lens.length>=4){ const med=[...lens].sort((a,b)=>a-b)[lens.length>>1]; if(len>med*1.7) times=Math.max(1,Math.min(5,Math.round(len/med))); }
+              if(times===1){ lens.push(len); if(lens.length>12) lens.shift(); }
+              add(times);
+            }
+            inSp=false; loudF=0; spF=0; sil=0;
+          }
+        }
+        if(++tick%3===0) $("level").style.width = Math.max(0,Math.min(100,(db-floor)/30*100))+"%";
+      }, 20);
+    },
+    stop(){
+      clearInterval(this.timer); this.timer=null;
+      this.stream && this.stream.getTracks().forEach(t=>t.stop()); this.stream=null;
+      this.ctx && this.ctx.close().catch(()=>{}); this.ctx=null;
+    }
+  };
+
+  // ── وضع التعرّف على الكلام ──
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const speech = {
+    rec:null, on:false, seen:0, last:"",
+    available(){ return !!SR; },
+    rekey(){ this.seen = matches(norm(this.last), cur().k); },
+    start(){
+      this.on=true;
+      const r = this.rec = new SR();
+      r.lang="ar-SA"; r.continuous=true; r.interimResults=true; r.maxAlternatives=1;
+      r.onstart=()=>{ this.seen=0; this.last=""; };
+      r.onresult=e=>{
+        let txt=""; for(let i=0;i<e.results.length;i++) txt+=e.results[i][0].transcript+" ";
+        this.last=txt;
+        const n = matches(norm(txt), cur().k);
+        if(n>this.seen){ add(n-this.seen); this.seen=n; }
+        $("level").style.width="70%"; setTimeout(()=>$("level").style.width="0",200);
+      };
+      r.onerror=e=>{
+        if(e.error==="not-allowed"||e.error==="service-not-allowed"){ setStatus("يحتاج إذن الميكروفون"); stop(true); }
+        else if(e.error==="network"){ setStatus("التعرّف يحتاج إنترنت — جرّب «نبضات الصوت»"); }
+      };
+      r.onend=()=>{ if(this.on) setTimeout(()=>{ try{ this.on && r.start(); }catch(_){} },120); };
+      r.start();
+    },
+    stop(){ this.on=false; try{ this.rec && this.rec.abort(); }catch(e){} this.rec=null; }
+  };
+
+  // ── تشغيل وإيقاف ──
+  let wake=null;
+  async function start(){
+    if(!window.isSecureContext || !navigator.mediaDevices){ setStatus("المايك يحتاج الصفحة تنفتح من رابط https"); return; }
+    if(done) select(idx);
+    try{
+      if(useSpeech()){
+        if(!speech.available()){ setStatus("متصفحك ما يدعم التعرّف على الكلام — استخدم كروم أو «نبضات الصوت»"); return; }
+        speech.start();
+      } else await burst.start();
+    } catch(e){ setStatus("ما قدرت أفتح المايك — تأكد إنك سمحت بالإذن"); return; }
+    listening=true;
+    setStatus(`أسمعك… قل «${cur().t}»`);
+    try{ wake = await navigator.wakeLock?.request("screen"); }catch(e){}
+    render();
+  }
+  function stop(keepStatus){
+    burst.stop(); speech.stop(); listening=false;
+    $("level").style.width="0";
+    try{ wake && wake.release(); }catch(e){} wake=null;
+    if(!keepStatus) setStatus("متوقف");
+    render();
+  }
+
+  // ── الأحداث ──
+  $("mic").onclick = ()=> listening ? stop() : start();
+  $("ring").onclick = ()=> add(1);
+  $("reset").onclick = ()=> select(idx);
+  $("next").onclick = ()=> select((idx+1)%LIST.length);
+  $("sens").value = burst.sens;
+  $("sens").oninput = e=>{ burst.sens=Number(e.target.value); store.set("sens",burst.sens); };
+  $("seq").checked = store.get("seq",true);
+  $("seq").onchange = e=> store.set("seq",e.target.checked);
+  if(store.get("mode","burst")==="speech") $("modeSpeech").checked=true;
+  document.querySelectorAll('input[name=mode]').forEach(r=>r.onchange=()=>{
+    store.set("mode", useSpeech()?"speech":"burst"); render();
+    if(listening){ stop(true); start(); }
+  });
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible" && listening && !wake) navigator.wakeLock?.request("screen").then(w=>wake=w).catch(()=>{}); });
+
+  if(done) setStatus(`أكملت «${cur().t}» ✓ — اضغط تصفير أو اختر ذكر`, true);
+  chips(); render();
+})();
+</script>
+</body>
+</html>
