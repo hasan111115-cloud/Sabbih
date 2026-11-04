@@ -8,7 +8,7 @@
 <title>سبّح</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@400&family=Noto+Naskh+Arabic:wght@600&family=Reem+Kufi:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Noto+Naskh+Arabic:wght@600&family=Reem+Kufi:wght@500;700&display=swap">
 <style>
 /* Layout: one column at thumb width — dhikr, canopy, count, primary action; settings below the fold */
 :root{
@@ -60,7 +60,50 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tally.done .n{color:var(--ok)}
 .hint{position:fixed;inset:auto 0 0;padding:0 16px calc(18px + env(safe-area-inset-bottom,0px));margin:0;text-align:center;font-size:13px;color:var(--muted);transition:opacity .4s}
 .hint.off{opacity:0}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.more{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:max(10px,env(safe-area-inset-left,0px));width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.more:hover{color:var(--ink);background:var(--vein)}
+.more svg{width:22px;height:22px;fill:currentColor}
+
+/* settings sheet */
+.sheet{border:0;padding:0;margin:auto 0 0;width:100%;max-width:100%;max-height:86vh;background:var(--surface);color:var(--ink);border-radius:20px 20px 0 0;box-shadow:0 -10px 40px -10px var(--shade)}
+@media (min-width:560px){.sheet{margin:auto;max-width:440px;border-radius:20px}}
+.sheet::backdrop{background:rgba(13,20,32,.45)}
+.sheet[open]{animation:up .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(24px);opacity:0}}
+.sh{display:flex;flex-direction:column;gap:22px;padding-block:8px calc(24px + env(safe-area-inset-bottom,0px));padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));overflow-y:auto;max-height:86vh}
+.sh-top{display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);padding-top:10px;z-index:1}
+.sh-top h2{margin:0;font-size:18px;font-weight:700}
+.x{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.x:hover{background:var(--vein);color:var(--ink)}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.grp{display:flex;flex-direction:column;gap:10px}
+.grp>h3{margin:0;font-size:13px;font-weight:700;color:var(--muted)}
+.list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.list label{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:0 14px;cursor:pointer;border-top:1px solid var(--line);font-size:15px}
+.list label:first-child{border-top:0}
+.list label small{font-family:var(--f-num);color:var(--muted);font-size:14px;direction:ltr}
+.list input{position:absolute;opacity:0;pointer-events:none}
+.list label:has(input:checked){background:var(--vein);font-weight:700}
+.list label:has(input:checked) small{color:var(--bronze)}
+.list label:has(input:focus-visible){outline:2px solid var(--bronze);outline-offset:-2px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--vein);border-radius:10px;padding:3px;gap:3px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:14px;color:var(--muted);cursor:pointer}
+.seg input:checked+label{background:var(--raised);color:var(--ink);font-weight:700;box-shadow:0 1px 3px var(--shade)}
+.seg input:focus-visible+label{outline:2px solid var(--bronze);outline-offset:1px}
+.note{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.range{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
+.range input{flex:1;accent-color:var(--bronze);height:28px}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;font-size:15px}
+.sw span{display:flex;flex-direction:column;gap:3px}
+.sw small{color:var(--muted);font-size:13px}
+.sw input{appearance:none;-webkit-appearance:none;flex:none;width:46px;height:28px;border-radius:14px;background:var(--line);position:relative;cursor:pointer;margin:0;transition:background .2s}
+.sw input::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;border-radius:50%;background:var(--raised);box-shadow:0 1px 3px var(--shade);transition:inset-inline-start .2s cubic-bezier(.2,.8,.2,1)}
+.sw input:checked{background:var(--bronze)}
+.sw input:checked::after{inset-inline-start:21px}
+.reset{height:48px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px}
+.reset:hover{border-color:var(--bronze)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -69,18 +112,54 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <button class="canopy" id="canopy" aria-label="ابدأ أو أوقف العدّ بالصوت"><canvas id="cv"></canvas></button>
   <div class="tally" id="tally" aria-live="polite"><span class="n" id="count">0</span><span class="of" id="target">/ 33</span></div>
 </main>
+<button class="more" id="more" aria-label="الإعدادات" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="19" r="1.9"/></svg></button>
+
+<dialog class="sheet" id="sheet" aria-labelledby="shH">
+  <div class="sh">
+    <div class="sh-top">
+      <h2 id="shH">الإعدادات</h2>
+      <button class="x" id="close" aria-label="إغلاق"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+
+    <section class="grp" aria-labelledby="gD">
+      <h3 id="gD">الذكر</h3>
+      <div class="list" id="dlist" role="radiogroup" aria-labelledby="gD"></div>
+    </section>
+
+    <section class="grp" aria-labelledby="gM">
+      <h3 id="gM">طريقة العدّ بالصوت</h3>
+      <div class="seg" role="radiogroup" aria-labelledby="gM">
+        <input type="radio" name="mode" id="modeBurst" value="burst" checked><label for="modeBurst">نبضات الصوت</label>
+        <input type="radio" name="mode" id="modeSpeech" value="speech"><label for="modeSpeech">التعرّف على الكلام</label>
+      </div>
+      <p class="note" id="modeNote"></p>
+      <div id="sensBox" class="grp">
+        <label for="sens" class="range"><span>حساسية أقل</span><input type="range" id="sens" min="0" max="100" value="60"><span>أكثر</span></label>
+        <p class="note">لو ما يلتقط صوتك ارفعها، ولو يعدّ أصوات ثانية نزّلها.</p>
+      </div>
+    </section>
+
+    <section class="grp" aria-label="خيارات">
+      <label class="sw" for="seq"><span>أذكار بعد الصلاة بالتسلسل<small>33 سبحان الله، ثم 33 الحمد لله، ثم 34 الله أكبر</small></span><input type="checkbox" id="seq" role="switch" checked></label>
+      <label class="sw" for="vib"><span>الاهتزاز مع كل عدّة<small>ما يشتغل على آيفون</small></span><input type="checkbox" id="vib" role="switch" checked></label>
+    </section>
+
+    <button class="reset" id="reset"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></svg>تصفير العدد</button>
+  </div>
+</dialog>
+
 <p class="hint" id="hint">اضغط المظلّة للبدء · الذكر لتغييره · مطوّلاً للتصفير</p>
 <script>
 (() => {
   const LIST = [
-    {s:"سبحان الله", t:"سُبْحَانَ اللَّهِ", n:33},
-    {s:"الحمد لله", t:"الْحَمْدُ لِلَّهِ", n:33},
-    {s:"الله أكبر", t:"اللَّهُ أَكْبَرُ", n:34},
-    {s:"أستغفر الله", t:"أَسْتَغْفِرُ اللَّهَ", n:100},
-    {s:"لا إله إلا الله", t:"لَا إِلَٰهَ إِلَّا اللَّهُ", n:100},
-    {s:"سبحان الله وبحمده", t:"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", n:100},
-    {s:"لا حول ولا قوة إلا بالله", t:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", n:100},
-    {s:"الصلاة على النبي", t:"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", n:100},
+    {s:"سبحان الله", t:"سُبْحَانَ اللَّهِ", n:33, k:["سبحان"]},
+    {s:"الحمد لله", t:"الْحَمْدُ لِلَّهِ", n:33, k:["حمد"]},
+    {s:"الله أكبر", t:"اللَّهُ أَكْبَرُ", n:34, k:["اكبر"]},
+    {s:"أستغفر الله", t:"أَسْتَغْفِرُ اللَّهَ", n:100, k:["استغفر"]},
+    {s:"لا إله إلا الله", t:"لَا إِلَٰهَ إِلَّا اللَّهُ", n:100, k:["لااله","لاله"]},
+    {s:"سبحان الله وبحمده", t:"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", n:100, k:["بحمده"]},
+    {s:"لا حول ولا قوة إلا بالله", t:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", n:100, k:["حول"]},
+    {s:"الصلاة على النبي", t:"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", n:100, k:["محمد"]},
   ];
   const $ = id => document.getElementById(id);
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -94,6 +173,27 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   let listening = false;
   const cur = () => LIST[idx];
   const save = () => { store.set("idx",idx); store.set("count",count); };
+  const useSpeech = () => $("modeSpeech").checked;
+
+  function norm(s){
+    let o="";
+    for(const c of s){
+      const u=c.charCodeAt(0);
+      if((u>=0x064B&&u<=0x065F)||u===0x0670||u===0x0640||/\s/.test(c)) continue;
+      if("أإآٱ".includes(c)) o+="ا"; else if(c==="ى"||c==="ئ") o+="ي";
+      else if(c==="ة") o+="ه"; else if(c==="ؤ") o+="و"; else o+=c;
+    }
+    return o;
+  }
+  function matches(s,keys){
+    let i=0,n=0;
+    while(i<s.length){
+      let best=-1,len=0;
+      for(const k of keys){ const j=s.indexOf(k,i); if(j>=0&&(best<0||j<best)){best=j;len=k.length;} }
+      if(best<0) break; n++; i=best+len;
+    }
+    return n;
+  }
 
   // ── the canopy ──
   const cv=$("cv"), cx=cv.getContext("2d");
@@ -194,10 +294,15 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     canopy.fillTo=Math.min(1,count/cur().n);
     canopy.openTo= listening||done ? 1 : 0.8;
     kick();
+    $("sensBox").hidden=useSpeech();
+    $("modeNote").textContent = useSpeech()
+      ? "يتأكد إن الكلمة هي الذكر نفسه. يحتاج متصفح كروم واتصال بالإنترنت."
+      : "كل ذكر تقوله بين سكتتين يُحسب مرة. سريع ويشتغل بدون إنترنت.";
+    document.querySelectorAll('#dlist input').forEach((r,i)=>r.checked=i===idx);
   }
   let hintTimer=0;
   function hint(t){ const h=$("hint"); h.textContent=t; h.classList.remove("off"); clearTimeout(hintTimer); hintTimer=setTimeout(()=>h.classList.add("off"),4000); }
-  function buzz(ms){ try{ navigator.vibrate&&navigator.vibrate(ms); }catch(e){} }
+  function buzz(ms){ if(!$("vib").checked) return; try{ navigator.vibrate&&navigator.vibrate(ms); }catch(e){} }
 
   // ── counting ──
   function add(n){
@@ -208,17 +313,18 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   }
   function finish(){
     done=true; buzz([260,90,260]); canopy.bloom=1;
-    if(idx<2) setTimeout(()=>select(idx+1),1400);   // أذكار بعد الصلاة: ٣٣ ثم ٣٣ ثم ٣٤
+    if($("seq").checked && idx<2) setTimeout(()=>select(idx+1),1400);   // أذكار بعد الصلاة: ٣٣ ثم ٣٣ ثم ٣٤
     else if(listening) stop();
   }
   function select(i){
     idx=i; count=0; done=false; canopy.fill=0;
+    speech.rekey();
     render(); save();
   }
 
   // ── burst mode: each utterance between pauses is one count ──
   const burst = {
-    ctx:null, stream:null, timer:null, sens:60,
+    ctx:null, stream:null, timer:null, sens:Number(store.get("sens",60)),
     async start(){
       this.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:true,autoGainControl:false}});
       this.ctx=new (window.AudioContext||window.webkitAudioContext)();
@@ -259,18 +365,49 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     }
   };
 
+  // ── speech mode: count the dhikr words in the transcript ──
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const speech = {
+    rec:null,on:false,seen:0,last:"",
+    rekey(){ this.seen=matches(norm(this.last),cur().k); },
+    start(){
+      this.on=true;
+      const r=this.rec=new SR();
+      r.lang="ar-SA"; r.continuous=true; r.interimResults=true; r.maxAlternatives=1;
+      r.onstart=()=>{ this.seen=0; this.last=""; };
+      r.onresult=e=>{
+        let txt=""; for(let i=0;i<e.results.length;i++) txt+=e.results[i][0].transcript+" ";
+        this.last=txt;
+        const n=matches(norm(txt),cur().k);
+        if(n>this.seen){ add(n-this.seen); this.seen=n; }
+      };
+      r.onerror=e=>{
+        if(e.error==="not-allowed"||e.error==="service-not-allowed"){ hint("اسمح للموقع باستخدام الميكروفون من إعدادات المتصفح"); stop(); }
+        else if(e.error==="network") hint("التعرّف على الكلام يحتاج إنترنت. جرّب «نبضات الصوت» من الإعدادات");
+      };
+      r.onend=()=>{ if(this.on) setTimeout(()=>{ try{ this.on&&r.start(); }catch(_){} },120); };
+      r.start();
+    },
+    stop(){ this.on=false; try{ this.rec&&this.rec.abort(); }catch(e){} this.rec=null; }
+  };
+
   // ── start / stop ──
   let wake=null;
   async function start(){
     if(!window.isSecureContext||!navigator.mediaDevices){ hint("الميكروفون يحتاج فتح الصفحة من رابط https"); return; }
     if(done) select(idx);
-    try{ await burst.start(); }catch(e){ hint("اسمح للموقع باستخدام الميكروفون من إعدادات المتصفح"); return; }
+    try{
+      if(useSpeech()){
+        if(!SR){ hint("متصفحك ما يدعم التعرّف على الكلام. استخدم كروم أو «نبضات الصوت»"); return; }
+        speech.start();
+      } else await burst.start();
+    }catch(e){ hint("اسمح للموقع باستخدام الميكروفون من إعدادات المتصفح"); return; }
     listening=true; $("hint").classList.add("off");
     try{ wake=await navigator.wakeLock?.request("screen"); }catch(e){}
     render();
   }
   function stop(){
-    burst.stop(); listening=false;
+    burst.stop(); speech.stop(); listening=false;
     try{ wake&&wake.release(); }catch(e){} wake=null;
     render();
   }
@@ -283,6 +420,28 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   cvBtn.addEventListener("click",()=>{ if(longFired) return; listening?stop():start(); });
   cvBtn.addEventListener("contextmenu",e=>e.preventDefault());
   $("dhikr").onclick=()=>{ if(listening) stop(); select((idx+1)%LIST.length); };
+
+  // ── settings ──
+  const sheet=$("sheet"), dl=$("dlist");
+  LIST.forEach((d,i)=>{
+    const l=document.createElement("label");
+    l.innerHTML='<input type="radio" name="dh"><span></span><small></small>';
+    l.querySelector("span").textContent=d.s; l.querySelector("small").textContent=d.n;
+    l.querySelector("input").onchange=()=>{ if(listening) stop(); select(i); };
+    dl.appendChild(l);
+  });
+  $("more").onclick=()=>{ try{ sheet.showModal(); }catch(e){ sheet.setAttribute("open",""); } };
+  $("close").onclick=()=>sheet.close();
+  sheet.addEventListener("click",e=>{ if(e.target===sheet) sheet.close(); });
+  $("reset").onclick=()=>{ select(idx); sheet.close(); };
+  $("sens").value=burst.sens;
+  $("sens").oninput=e=>{ burst.sens=Number(e.target.value); store.set("sens",burst.sens); };
+  for(const id of ["seq","vib"]){ $(id).checked=store.get(id,true); $(id).onchange=e=>store.set(id,e.target.checked); }
+  if(store.get("mode","burst")==="speech") $("modeSpeech").checked=true;
+  document.querySelectorAll('input[name=mode]').forEach(r=>r.onchange=()=>{
+    store.set("mode",useSpeech()?"speech":"burst"); render();
+    if(listening){ stop(); start(); }
+  });
 
   document.addEventListener("visibilitychange",()=>{
     if(document.visibilityState==="visible"&&listening&&!wake) navigator.wakeLock?.request("screen").then(w=>wake=w).catch(()=>{});

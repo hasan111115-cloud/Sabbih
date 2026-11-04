@@ -26,7 +26,7 @@ The courtyard of the Prophet's Mosque: cool marble, the umbrellas' fabric, bronz
 The count is a top-down umbrella canopy (16 ribs, square plan, sides bowing inward), drawn on canvas. Fabric fills panel by panel as the count rises; the canopy is partly folded when idle and opens fully while listening or when the target is reached, with a brief bloom on completion. Tapping it counts by hand.
 
 ## Layout
-One screen, nothing else: the vocalized dhikr, the canopy, the count in Western digits ("19 / 33"). Tap canopy = start/stop voice counting; long-press canopy = reset; tap dhikr = next dhikr. A one-line hint fades out after first visit; errors reuse it. Burst counting only, fixed sensitivity. After-prayer sequence (33, 33, 34) auto-advances.
+One screen, nothing else: the vocalized dhikr, the canopy, the count in Western digits ("19 / 33"). Tap canopy = start/stop voice counting; long-press canopy = reset; tap dhikr = next dhikr. A one-line hint fades out after first visit; errors reuse it. A three-dot button (top-left, RTL end) opens a bottom sheet (dialog) with: dhikr list with targets, counting method (burst / speech recognition) as a segmented control, sensitivity (burst only), switches for after-prayer sequence and vibration, and a reset button.
 
 ## Motion
 Exponential ease toward targets (fill ~90ms, open ~160ms time constants). Reduced motion: instant.
