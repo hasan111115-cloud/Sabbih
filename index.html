@@ -8,7 +8,7 @@
 <title>سبّح</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Noto+Naskh+Arabic:wght@500;600&family=Reem+Kufi:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@400&family=Noto+Naskh+Arabic:wght@600&family=Reem+Kufi:wght@500;700&display=swap">
 <style>
 /* Layout: one column at thumb width — dhikr, canopy, count, primary action; settings below the fold */
 :root{
@@ -46,187 +46,54 @@
 }
 
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);-webkit-tap-highlight-color:transparent}
-body{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{height:100%;margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-ui);-webkit-tap-highlight-color:transparent;overflow:hidden}
 ::selection{background:var(--bronze);color:var(--on-bronze)}
-input,button{font:inherit;color:inherit;caret-color:var(--bronze)}
-:focus-visible{outline:2px solid var(--bronze);outline-offset:3px;border-radius:6px}
-
-.wrap{max-width:440px;margin:0 auto;padding-block:14px 32px;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));display:flex;flex-direction:column}
-
-/* top bar */
-.top{display:flex;align-items:center;justify-content:space-between;height:44px}
-.mark{font-family:var(--f-num);font-weight:700;font-size:26px;color:var(--bronze);letter-spacing:0;margin:0}
-.today{display:flex;align-items:baseline;gap:6px;color:var(--muted);font-size:13px}
-.today b{font-family:var(--f-num);font-weight:500;color:var(--ink);font-size:17px;font-variant-numeric:tabular-nums}
-
-/* dhikr picker */
-.pick{display:flex;gap:6px;overflow-x:auto;margin:10px calc(-1 * max(18px,env(safe-area-inset-left,0px))) 0;padding:2px max(18px,env(safe-area-inset-left,0px)) 6px;scrollbar-width:none;scroll-padding-inline:18px}
-.pick::-webkit-scrollbar{display:none}
-.pick button{flex:none;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
-.pick button[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink);font-weight:700}
-
-/* stage */
-.stage{display:flex;flex-direction:column;align-items:center;margin-top:18px}
-.dhikr{font-family:var(--f-dhikr);font-weight:600;font-size:clamp(28px,8.4vw,38px);line-height:1.5;text-align:center;margin:0;text-wrap:balance;min-height:1.5em}
-.canopy{display:block;width:min(244px,64vw);aspect-ratio:1;max-width:100%;margin-top:6px;border:0;padding:0;background:none;cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:2px solid var(--bronze);outline-offset:6px;border-radius:12px}
+main{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(16px,4vh,36px);padding-block:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;touch-action:manipulation}
+.dhikr{font-family:var(--f-dhikr);font-weight:600;font-size:clamp(30px,9vw,46px);line-height:1.5;text-align:center;text-wrap:balance;min-height:1.5em;transition:opacity .25s}
+.canopy{display:block;width:min(78vw,52vh,380px);aspect-ratio:1;max-width:100%}
 .canopy canvas{width:100%;height:100%;display:block}
-.tally{display:flex;align-items:baseline;justify-content:center;gap:10px;margin-top:2px}
-.tally .n{font-family:var(--f-num);font-weight:700;font-size:64px;line-height:1;font-variant-numeric:tabular-nums;min-width:2ch;text-align:center}
-.tally .of{font-family:var(--f-num);font-weight:500;color:var(--muted);font-size:18px;font-variant-numeric:tabular-nums}
-.level{height:2px;width:120px;background:var(--line);margin-top:12px;border-radius:1px;overflow:hidden}
-.level i{display:block;height:100%;width:0;background:var(--bronze);transition:width 80ms linear;margin-inline-start:0}
-.status{min-height:2.9em;margin:10px 0 0;text-align:center;color:var(--muted);font-size:14px;line-height:1.45;text-wrap:balance}
-.status.done{color:var(--ok);font-weight:700}
-
-/* actions */
-.act{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-.primary{height:56px;border:0;border-radius:12px;background:var(--bronze);color:var(--on-bronze);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;box-shadow:0 6px 16px -8px var(--shade);transition:transform .12s,background .2s}
-.primary:active{transform:scale(.985)}
-.primary.on{background:transparent;color:var(--bronze);box-shadow:inset 0 0 0 1.5px var(--bronze)}
-.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ghost{height:46px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
-.ghost:hover,.pick button:hover{border-color:var(--bronze)}
-svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-
-/* settings */
-.settings{margin-top:28px;border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:20px}
-.settings h2{margin:0;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.02em}
-.field{display:flex;flex-direction:column;gap:8px}
-.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--vein);border-radius:10px;padding:3px;gap:3px}
-.seg input{position:absolute;opacity:0;pointer-events:none}
-.seg label{height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:14px;color:var(--muted);cursor:pointer;transition:background .2s,color .2s}
-.seg input:checked+label{background:var(--raised);color:var(--ink);font-weight:700;box-shadow:0 1px 3px var(--shade)}
-.seg input:focus-visible+label{outline:2px solid var(--bronze);outline-offset:1px}
-.hint{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
-.range{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
-input[type=range]{flex:1;accent-color:var(--bronze);height:28px}
-.switch{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer}
-.switch span{display:flex;flex-direction:column;gap:3px;font-size:15px}
-.switch small{color:var(--muted);font-size:13px}
-.switch input{appearance:none;-webkit-appearance:none;flex:none;width:46px;height:28px;border-radius:14px;background:var(--line);position:relative;cursor:pointer;transition:background .2s;margin:0}
-.switch input::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);box-shadow:0 1px 3px var(--shade);transition:inset-inline-start .2s cubic-bezier(.2,.8,.2,1)}
-.switch input:checked{background:var(--bronze)}
-.switch input:checked::after{inset-inline-start:21px}
-.foot{margin:26px 0 0;color:var(--muted);font-size:12.5px;line-height:1.7;text-align:center}
-
-@media (max-height:700px){ .canopy{width:min(200px,56vw)} .tally .n{font-size:54px} .stage{margin-top:10px} }
-@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+.tally{display:flex;align-items:baseline;gap:8px;font-family:var(--f-num);font-variant-numeric:tabular-nums;direction:ltr}
+.tally .n{font-weight:700;font-size:clamp(64px,18vw,96px);line-height:1}
+.tally .of{font-weight:500;font-size:clamp(18px,5vw,24px);color:var(--muted)}
+.tally.done .n{color:var(--ok)}
+.hint{position:fixed;inset:auto 0 0;padding:0 16px calc(18px + env(safe-area-inset-bottom,0px));margin:0;text-align:center;font-size:13px;color:var(--muted);transition:opacity .4s}
+.hint.off{opacity:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<main class="wrap">
-  <header class="top">
-    <h1 class="mark">سبّح</h1>
-    <div class="today">اليوم <b id="today">٠</b></div>
-  </header>
-
-  <nav class="pick" id="pick" aria-label="اختر الذكر"></nav>
-
-  <section class="stage" aria-live="off">
-    <p class="dhikr" id="dhikr"></p>
-    <button class="canopy" id="canopy" aria-label="اضغط للعدّ يدوياً"><canvas id="cv"></canvas></button>
-    <div class="tally" aria-live="polite" aria-atomic="true">
-      <span class="n" id="count">٠</span><span class="of" id="target">من ٣٣</span>
-    </div>
-    <div class="level" aria-hidden="true"><i id="level"></i></div>
-    <p class="status" id="status" aria-live="polite">اضغط «ابدأ الاستماع» وقل الذكر بصوت مسموع</p>
-  </section>
-
-  <div class="act">
-    <button class="primary" id="mic">
-      <svg class="i" viewBox="0 0 24 24" aria-hidden="true" id="micIcon"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>
-      <span id="micLabel">ابدأ الاستماع</span>
-    </button>
-    <div class="pair">
-      <button class="ghost" id="reset">
-        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></svg>
-        تصفير
-      </button>
-      <button class="ghost" id="next">
-        الذكر التالي
-        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <section class="settings" aria-labelledby="setH">
-    <h2 id="setH">الإعدادات</h2>
-
-    <div class="field">
-      <div class="seg" role="radiogroup" aria-label="طريقة العدّ">
-        <input type="radio" name="mode" id="modeBurst" value="burst" checked><label for="modeBurst">نبضات الصوت</label>
-        <input type="radio" name="mode" id="modeSpeech" value="speech"><label for="modeSpeech">التعرّف على الكلام</label>
-      </div>
-      <p class="hint" id="modeHint"></p>
-    </div>
-
-    <div class="field" id="sensBox">
-      <label for="sens" class="range"><span>أقل</span><input type="range" id="sens" min="0" max="100" value="60" aria-label="الحساسية"><span>أكثر</span></label>
-      <p class="hint">لو ما يلتقط صوتك ارفعها، ولو يعدّ أصوات ثانية نزّلها.</p>
-    </div>
-
-    <label class="switch" for="seq">
-      <span>أذكار بعد الصلاة بالتسلسل<small>سبحان الله ٣٣، ثم الحمد لله ٣٣، ثم الله أكبر ٣٤</small></span>
-      <input type="checkbox" id="seq" role="switch" checked>
-    </label>
-  </section>
-
-  <p class="foot">تقدر تضغط على المظلّة للعدّ باليد. في «نبضات الصوت» يُعالج الصوت داخل جوالك وما يُرسل لأي مكان.</p>
+<main>
+  <button class="dhikr" id="dhikr" aria-label="الذكر التالي"></button>
+  <button class="canopy" id="canopy" aria-label="ابدأ أو أوقف العدّ بالصوت"><canvas id="cv"></canvas></button>
+  <div class="tally" id="tally" aria-live="polite"><span class="n" id="count">0</span><span class="of" id="target">/ 33</span></div>
 </main>
-
+<p class="hint" id="hint">اضغط المظلّة للبدء · الذكر لتغييره · مطوّلاً للتصفير</p>
 <script>
 (() => {
   const LIST = [
-    {s:"سبحان الله", t:"سُبْحَانَ اللَّهِ", n:33, k:["سبحان"]},
-    {s:"الحمد لله", t:"الْحَمْدُ لِلَّهِ", n:33, k:["حمد"]},
-    {s:"الله أكبر", t:"اللَّهُ أَكْبَرُ", n:34, k:["اكبر"]},
-    {s:"أستغفر الله", t:"أَسْتَغْفِرُ اللَّهَ", n:100, k:["استغفر"]},
-    {s:"لا إله إلا الله", t:"لَا إِلَٰهَ إِلَّا اللَّهُ", n:100, k:["لااله","لاله"]},
-    {s:"سبحان الله وبحمده", t:"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", n:100, k:["بحمده"]},
-    {s:"لا حول ولا قوة إلا بالله", t:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", n:100, k:["حول"]},
-    {s:"الصلاة على النبي", t:"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", n:100, k:["محمد"]},
+    {s:"سبحان الله", t:"سُبْحَانَ اللَّهِ", n:33},
+    {s:"الحمد لله", t:"الْحَمْدُ لِلَّهِ", n:33},
+    {s:"الله أكبر", t:"اللَّهُ أَكْبَرُ", n:34},
+    {s:"أستغفر الله", t:"أَسْتَغْفِرُ اللَّهَ", n:100},
+    {s:"لا إله إلا الله", t:"لَا إِلَٰهَ إِلَّا اللَّهُ", n:100},
+    {s:"سبحان الله وبحمده", t:"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", n:100},
+    {s:"لا حول ولا قوة إلا بالله", t:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", n:100},
+    {s:"الصلاة على النبي", t:"اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", n:100},
   ];
-  const AFTER = [0,1,2];
   const $ = id => document.getElementById(id);
-  const ar = n => n.toLocaleString("ar-SA");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // ── storage ──
   const store = {
     get(k,d){ try{ const v=localStorage.getItem("sabbih_"+k); return v===null?d:JSON.parse(v);}catch(e){return d} },
     set(k,v){ try{ localStorage.setItem("sabbih_"+k,JSON.stringify(v)); }catch(e){} }
   };
-  const dayKey = () => { const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); };
   let idx = Math.max(0, Math.min(store.get("idx",0), LIST.length-1));
   let count = store.get("count",0);
-  let today = store.get("day","")===dayKey() ? store.get("today",0) : 0;
   let done = count >= LIST[idx].n;
   let listening = false;
   const cur = () => LIST[idx];
-  const useSpeech = () => $("modeSpeech").checked;
-  const save = () => { store.set("idx",idx); store.set("count",count); store.set("day",dayKey()); store.set("today",today); };
-
-  // ── Arabic text matching ──
-  function norm(s){
-    let o="";
-    for(const c of s){
-      const u=c.charCodeAt(0);
-      if((u>=0x064B&&u<=0x065F)||u===0x0670||u===0x0640||/\s/.test(c)) continue;
-      if("أإآٱ".includes(c)) o+="ا"; else if(c==="ى"||c==="ئ") o+="ي";
-      else if(c==="ة") o+="ه"; else if(c==="ؤ") o+="و"; else o+=c;
-    }
-    return o;
-  }
-  function matches(s,keys){
-    let i=0,n=0;
-    while(i<s.length){
-      let best=-1,len=0;
-      for(const k of keys){ const j=s.indexOf(k,i); if(j>=0&&(best<0||j<best)){best=j;len=k.length;} }
-      if(best<0) break; n++; i=best+len;
-    }
-    return n;
-  }
+  const save = () => { store.set("idx",idx); store.set("count",count); };
 
   // ── the canopy ──
   const cv=$("cv"), cx=cv.getContext("2d");
@@ -320,74 +187,45 @@ input[type=range]{flex:1;accent-color:var(--bronze);height:28px}
   // ── interface ──
   function render(){
     $("dhikr").textContent=cur().t;
-    $("count").textContent=ar(count);
-    $("target").textContent="من "+ar(cur().n);
-    $("today").textContent=ar(today);
-    $("micLabel").textContent = listening ? "إيقاف الاستماع" : "ابدأ الاستماع";
-    $("mic").classList.toggle("on",listening);
-    $("micIcon").innerHTML = listening
-      ? '<rect x="7" y="7" width="10" height="10" rx="1.5"/>'
-      : '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/>';
-    $("sensBox").hidden=useSpeech();
-    $("modeHint").textContent = useSpeech()
-      ? "يتأكد إن الكلمة هي الذكر نفسه. يحتاج متصفح كروم واتصال."
-      : "كل ذكر تقوله بين سكتتين يُحسب مرة. سريع ويشتغل بدون إنترنت.";
+    $("count").textContent=String(count);
+    $("target").textContent="/ "+cur().n;
+    $("tally").classList.toggle("done",done);
+    $("canopy").setAttribute("aria-pressed",listening);
     canopy.fillTo=Math.min(1,count/cur().n);
     canopy.openTo= listening||done ? 1 : 0.8;
     kick();
   }
-  function buildPick(){
-    const box=$("pick"); box.textContent="";
-    LIST.forEach((d,i)=>{
-      const b=document.createElement("button");
-      b.textContent=d.s; b.setAttribute("aria-pressed",i===idx);
-      b.onclick=()=>{ if(i!==idx) select(i); };
-      box.appendChild(b);
-      if(i===idx) requestAnimationFrame(()=>b.scrollIntoView({inline:"center",block:"nearest",behavior:reduce?"auto":"smooth"}));
-    });
-  }
-  function setStatus(t,ok){ const s=$("status"); s.textContent=t; s.classList.toggle("done",!!ok); }
+  let hintTimer=0;
+  function hint(t){ const h=$("hint"); h.textContent=t; h.classList.remove("off"); clearTimeout(hintTimer); hintTimer=setTimeout(()=>h.classList.add("off"),4000); }
   function buzz(ms){ try{ navigator.vibrate&&navigator.vibrate(ms); }catch(e){} }
 
   // ── counting ──
   function add(n){
     if(done) return;
-    for(let i=0;i<n;i++){ count++; today++; if(count>=cur().n){ finish(); break; } }
+    for(let i=0;i<n;i++){ count++; if(count>=cur().n){ finish(); break; } }
     if(!done) buzz(22);
     render(); save();
   }
   function finish(){
     done=true; buzz([260,90,260]); canopy.bloom=1;
-    const p=AFTER.indexOf(idx);
-    if($("seq").checked && p>=0 && p<AFTER.length-1){
-      const nx=AFTER[p+1];
-      setStatus("اكتمل «"+cur().s+"». التالي: "+LIST[nx].s, true);
-      setTimeout(()=>select(nx,true),1400);
-    } else {
-      setStatus("تقبّل الله. أكملت "+ar(cur().n)+" من «"+cur().s+"»", true);
-      if(listening) stop(true);
-    }
+    if(idx<2) setTimeout(()=>select(idx+1),1400);   // أذكار بعد الصلاة: ٣٣ ثم ٣٣ ثم ٣٤
+    else if(listening) stop();
   }
-  function select(i,keep){
-    idx=i; count=0; done=false;
-    speech.rekey();
-    if(!keep&&listening) stop();
-    if(listening) setStatus("أسمعك. قل «"+cur().s+"»");
-    else if(!keep) setStatus("اضغط «ابدأ الاستماع» وقل الذكر بصوت مسموع");
-    canopy.fill=0;
-    buildPick(); render(); save();
+  function select(i){
+    idx=i; count=0; done=false; canopy.fill=0;
+    render(); save();
   }
 
   // ── burst mode: each utterance between pauses is one count ──
   const burst = {
-    ctx:null, stream:null, timer:null, sens:Number(store.get("sens",60)),
+    ctx:null, stream:null, timer:null, sens:60,
     async start(){
       this.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:true,autoGainControl:false}});
       this.ctx=new (window.AudioContext||window.webkitAudioContext)();
       const an=this.ctx.createAnalyser(); an.fftSize=1024;
       this.ctx.createMediaStreamSource(this.stream).connect(an);
       const buf=new Float32Array(an.fftSize);
-      let floor=null,warm=0,inSp=false,spF=0,loudF=0,sil=0,tick=0;
+      let floor=null,warm=0,inSp=false,spF=0,loudF=0,sil=0;
       const GAP=11,MIN=13,lens=[];
       this.timer=setInterval(()=>{
         an.getFloatTimeDomainData(buf);
@@ -412,7 +250,6 @@ input[type=range]{flex:1;accent-color:var(--bronze);height:28px}
             inSp=false; loudF=0; spF=0; sil=0;
           }
         }
-        if(++tick%3===0) $("level").style.width=Math.max(0,Math.min(100,(db-floor)/30*100))+"%";
       },20);
     },
     stop(){
@@ -422,71 +259,31 @@ input[type=range]{flex:1;accent-color:var(--bronze);height:28px}
     }
   };
 
-  // ── speech mode: count the dhikr words in the transcript ──
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  const speech = {
-    rec:null,on:false,seen:0,last:"",
-    rekey(){ this.seen=matches(norm(this.last),cur().k); },
-    start(){
-      this.on=true;
-      const r=this.rec=new SR();
-      r.lang="ar-SA"; r.continuous=true; r.interimResults=true; r.maxAlternatives=1;
-      r.onstart=()=>{ this.seen=0; this.last=""; };
-      r.onresult=e=>{
-        let txt=""; for(let i=0;i<e.results.length;i++) txt+=e.results[i][0].transcript+" ";
-        this.last=txt;
-        const n=matches(norm(txt),cur().k);
-        if(n>this.seen){ add(n-this.seen); this.seen=n; }
-        $("level").style.width="70%"; setTimeout(()=>$("level").style.width="0",220);
-      };
-      r.onerror=e=>{
-        if(e.error==="not-allowed"||e.error==="service-not-allowed"){ setStatus("المتصفح ما سمح بالميكروفون. فعّله من إعدادات الموقع وحاول مرة ثانية."); stop(true); }
-        else if(e.error==="network") setStatus("التعرّف على الكلام يحتاج إنترنت. جرّب «نبضات الصوت» بدون اتصال.");
-      };
-      r.onend=()=>{ if(this.on) setTimeout(()=>{ try{ this.on&&r.start(); }catch(_){} },120); };
-      r.start();
-    },
-    stop(){ this.on=false; try{ this.rec&&this.rec.abort(); }catch(e){} this.rec=null; }
-  };
-
   // ── start / stop ──
   let wake=null;
   async function start(){
-    if(!window.isSecureContext||!navigator.mediaDevices){ setStatus("الميكروفون يحتاج فتح الصفحة من رابط يبدأ بـ https"); return; }
+    if(!window.isSecureContext||!navigator.mediaDevices){ hint("الميكروفون يحتاج فتح الصفحة من رابط https"); return; }
     if(done) select(idx);
-    try{
-      if(useSpeech()){
-        if(!SR){ setStatus("متصفحك ما يدعم التعرّف على الكلام. استخدم كروم، أو اختر «نبضات الصوت»."); return; }
-        speech.start();
-      } else await burst.start();
-    }catch(e){ setStatus("ما قدرت أفتح الميكروفون. اسمح للموقع باستخدامه من إعدادات المتصفح."); return; }
-    listening=true;
-    setStatus("أسمعك. قل «"+cur().s+"»");
+    try{ await burst.start(); }catch(e){ hint("اسمح للموقع باستخدام الميكروفون من إعدادات المتصفح"); return; }
+    listening=true; $("hint").classList.add("off");
     try{ wake=await navigator.wakeLock?.request("screen"); }catch(e){}
     render();
   }
-  function stop(keepStatus){
-    burst.stop(); speech.stop(); listening=false;
-    $("level").style.width="0";
+  function stop(){
+    burst.stop(); listening=false;
     try{ wake&&wake.release(); }catch(e){} wake=null;
-    if(!keepStatus) setStatus("توقّف الاستماع. عدّك محفوظ.");
     render();
   }
 
-  // ── events ──
-  $("mic").onclick=()=> listening?stop():start();
-  $("canopy").onclick=()=> add(1);
-  $("reset").onclick=()=> select(idx);
-  $("next").onclick=()=> select((idx+1)%LIST.length);
-  $("sens").value=burst.sens;
-  $("sens").oninput=e=>{ burst.sens=Number(e.target.value); store.set("sens",burst.sens); };
-  $("seq").checked=store.get("seq",true);
-  $("seq").onchange=e=> store.set("seq",e.target.checked);
-  if(store.get("mode","burst")==="speech") $("modeSpeech").checked=true;
-  document.querySelectorAll('input[name=mode]').forEach(r=>r.onchange=()=>{
-    store.set("mode",useSpeech()?"speech":"burst"); render();
-    if(listening){ stop(true); start(); }
-  });
+  // ── gestures: tap canopy = listen, long-press canopy = reset, tap dhikr = next ──
+  let pressT=0, longFired=false;
+  const cvBtn=$("canopy");
+  cvBtn.addEventListener("pointerdown",()=>{ longFired=false; pressT=setTimeout(()=>{ longFired=true; buzz(60); select(idx); },650); });
+  ["pointerup","pointerleave","pointercancel"].forEach(e=>cvBtn.addEventListener(e,()=>clearTimeout(pressT)));
+  cvBtn.addEventListener("click",()=>{ if(longFired) return; listening?stop():start(); });
+  cvBtn.addEventListener("contextmenu",e=>e.preventDefault());
+  $("dhikr").onclick=()=>{ if(listening) stop(); select((idx+1)%LIST.length); };
+
   document.addEventListener("visibilitychange",()=>{
     if(document.visibilityState==="visible"&&listening&&!wake) navigator.wakeLock?.request("screen").then(w=>wake=w).catch(()=>{});
   });
@@ -494,9 +291,9 @@ input[type=range]{flex:1;accent-color:var(--bronze);height:28px}
   new ResizeObserver(sizeCanvas).observe(cv);
 
   readColors();
-  if(done) setStatus("أكملت «"+cur().s+"». اضغط تصفير أو اختر ذكراً آخر", true);
   canopy.fill=canopy.fillTo=Math.min(1,count/cur().n);
-  buildPick(); render(); sizeCanvas();
+  render(); sizeCanvas();
+  if(store.get("seen",false)) $("hint").classList.add("off"); else { store.set("seen",true); setTimeout(()=>$("hint").classList.add("off"),7000); }
   if(document.fonts) document.fonts.ready.then(draw);
 })();
 </script>
